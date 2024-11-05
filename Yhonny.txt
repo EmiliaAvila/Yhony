@@ -1,0 +1,184 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Clase Tarea (Task)
+class Tarea {
+    private int id;
+    private String descripcion;
+    private String prioridad; // "alta", "media", "baja"
+    private String estado; // "pendiente", "en progreso", "completada"
+
+    // Constructor
+    public Tarea(int id, String descripcion, String prioridad, String estado) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.prioridad = prioridad;
+        this.estado = estado;
+    }
+
+    // Getters y Setters
+    public int getId() {
+        return id;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getPrioridad() {
+        return prioridad;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    // Método toString para mostrar información de la tarea
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Descripción: " + descripcion + ", Prioridad: " + prioridad + ", Estado: " + estado;
+    }
+}
+
+// Clase GestorDeTareas (TaskManager)
+class GestorDeTareas {
+    private ArrayList<Tarea> tareas = new ArrayList<>();
+    private int siguienteId = 1;
+
+    // Agregar tarea
+    public void agregarTarea(String descripcion, String prioridad, String estado) {
+        Tarea tarea = new Tarea(siguienteId++, descripcion, prioridad, estado);
+        tareas.add(tarea);
+        System.out.println("Tarea agregada exitosamente.");
+    }
+
+    // Visualizar todas las tareas
+    public void visualizarTareas() {
+        if (tareas.isEmpty()) {
+            System.out.println("No hay tareas para mostrar.");
+        } else {
+            for (Tarea tarea : tareas) {
+                System.out.println(tarea);
+            }
+        }
+    }
+
+    // Actualizar tarea por ID
+    public void actualizarTarea(int id, String nuevaDescripcion, String nuevoEstado) {
+        for (Tarea tarea : tareas) {
+            if (tarea.getId() == id) {
+                tarea.setDescripcion(nuevaDescripcion);
+                tarea.setEstado(nuevoEstado);
+                System.out.println("Tarea actualizada exitosamente.");
+                return;
+            }
+        }
+        System.out.println("Tarea no encontrada.");
+    }
+
+    // Eliminar tarea por ID
+    public void eliminarTarea(int id) {
+        for (Tarea tarea : tareas) {
+            if (tarea.getId() == id) {
+                tareas.remove(tarea);
+                System.out.println("Tarea eliminada exitosamente.");
+                return;
+            }
+        }
+        System.out.println("Tarea no encontrada.");
+    }
+
+    // Buscar tareas por prioridad
+    public void buscarPorPrioridad(String prioridad) {
+        boolean encontrado = false;
+        for (Tarea tarea : tareas) {
+            if (tarea.getPrioridad().equalsIgnoreCase(prioridad)) {
+                System.out.println(tarea);
+                encontrado = true;
+            }
+        }
+        if (!encontrado) {
+            System.out.println("No se encontraron tareas con prioridad " + prioridad + ".");
+        }
+    }
+}
+
+// Clase Principal (Main)
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        GestorDeTareas gestor = new GestorDeTareas();
+        int opcion;
+
+        do {
+            System.out.println("\n--- Menú de Gestión de Tareas ---");
+            System.out.println("1. Agregar nueva tarea");
+            System.out.println("2. Visualizar todas las tareas");
+            System.out.println("3. Actualizar tarea por ID");
+            System.out.println("4. Eliminar tarea");
+            System.out.println("5. Buscar tareas por prioridad");
+            System.out.println("6. Salir");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Ingrese la descripción de la tarea: ");
+                    String descripcion = scanner.nextLine();
+                    System.out.print("Ingrese la prioridad (alta, media, baja): ");
+                    String prioridad = scanner.nextLine();
+                    System.out.print("Ingrese el estado (pendiente, en progreso, completada): ");
+                    String estado = scanner.nextLine();
+                    gestor.agregarTarea(descripcion, prioridad, estado);
+                    break;
+
+                case 2:
+                    System.out.println("\n--- Lista de Tareas ---");
+                    gestor.visualizarTareas();
+                    break;
+
+                case 3:
+                    System.out.print("Ingrese el ID de la tarea a actualizar: ");
+                    int idActualizar = scanner.nextInt();
+                    scanner.nextLine(); // Limpiar el buffer
+                    System.out.print("Ingrese la nueva descripción: ");
+                    String nuevaDescripcion = scanner.nextLine();
+                    System.out.print("Ingrese el nuevo estado (pendiente, en progreso, completada): ");
+                    String nuevoEstado = scanner.nextLine();
+                    gestor.actualizarTarea(idActualizar, nuevaDescripcion, nuevoEstado);
+                    break;
+
+                case 4:
+                    System.out.print("Ingrese el ID de la tarea a eliminar: ");
+                    int idEliminar = scanner.nextInt();
+                    gestor.eliminarTarea(idEliminar);
+                    break;
+
+                case 5:
+                    System.out.print("Ingrese la prioridad para buscar (alta, media, baja): ");
+                    String prioridadBuscar = scanner.nextLine();
+                    System.out.println("\n--- Tareas con Prioridad " + prioridadBuscar + " ---");
+                    gestor.buscarPorPrioridad(prioridadBuscar);
+                    break;
+
+                case 6:
+                    System.out.println("Saliendo del sistema de gestión de tareas.");
+                    break;
+
+                default:
+                    System.out.println("Opción no válida. Por favor intente de nuevo.");
+            }
+        } while (opcion != 6);
+
+        scanner.close();
+    }
+}
